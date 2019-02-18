@@ -1,0 +1,26 @@
+ARG hadoop_home=/opt/hadoop
+ARG hadoop_version=3.2.0
+ARG java_version=8
+
+FROM centos:7 AS install-hadoop
+ARG hadoop_home
+ARG hadoop_version
+ARG java_version
+ENV JAVA_HOME=/usr/lib/jvm/jre-1.${java_version}.0-openjdk
+COPY resources /resources
+ADD http://www-eu.apache.org/dist/hadoop/common/hadoop-${hadoop_version}/hadoop-${hadoop_version}.tar.gz /resources
+RUN bash /resources/install_hadoop.sh
+
+FROM centos:7 AS finish-setup
+ARG hadoop_home
+ARG java_version
+COPY --from=install-hadoop "${hadoop_home}" "${hadoop_home}"
+COPY entrypoint.sh /
+RUN yum -y install java-1.${java_version}.0-openjdk
+RUN echo "export PATH=\"${hadoop_home}/bin:${hadoop_home}/sbin:\${PATH}\"" >/etc/profile.d/hadoop.sh
+
+FROM scratch
+ARG hadoop_home
+COPY --from=finish-setup / /
+ENV PATH="${hadoop_home}/bin:${hadoop_home}/sbin:${PATH}"
+ENTRYPOINT ["/entrypoint.sh"]
