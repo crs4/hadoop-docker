@@ -15,3 +15,10 @@ script:
   - "docker exec hadoop bash -c 'until hdfs dfsadmin -safemode wait 2>/dev/null; do sleep 0.1; done'"
   - docker cp check.sh hadoop:/
   - docker exec hadoop bash /check.sh
+
+deploy:
+  - provider: script
+    script: bash push.sh
+    on:
+      repo: crs4/hadoop-docker
+      branch: master

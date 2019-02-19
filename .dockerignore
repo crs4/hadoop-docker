@@ -1,0 +1,6 @@
+.*
+check.sh
+Dockerfile*
+LICENSE
+push.sh
+README.md

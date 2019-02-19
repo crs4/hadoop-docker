@@ -16,7 +16,7 @@ ARG hadoop_home
 ARG java_version
 COPY --from=install-hadoop "${hadoop_home}" "${hadoop_home}"
 COPY entrypoint.sh /
-RUN yum -y install java-1.${java_version}.0-openjdk
+RUN yum -y install java-1.${java_version}.0-openjdk && yum clean all
 RUN echo "export PATH=\"${hadoop_home}/bin:${hadoop_home}/sbin:\${PATH}\"" >/etc/profile.d/hadoop.sh
 
 FROM scratch
