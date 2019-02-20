@@ -11,18 +11,14 @@ COPY resources /resources
 ADD http://www-eu.apache.org/dist/hadoop/common/hadoop-${hadoop_version}/hadoop-${hadoop_version}.tar.gz /resources
 RUN bash /resources/install_hadoop.sh
 
-FROM ubuntu:18.04 AS finish-setup
+FROM ubuntu:18.04
 ARG hadoop_home
 ARG java_version
 COPY --from=install-hadoop "${hadoop_home}" "${hadoop_home}"
 COPY entrypoint.sh /
 RUN apt -y update && apt -y install \
       openjdk-${java_version}-jre \
-    && apt clean && rm -rf /var/lib/apt-lists/*
-RUN echo "export PATH=\"${hadoop_home}/bin:${hadoop_home}/sbin:\${PATH}\"" >/etc/profile.d/hadoop.sh
-
-FROM scratch
-ARG hadoop_home
-COPY --from=finish-setup / /
+    && apt clean && rm -rf /var/lib/apt-lists/* \
+    && echo "export PATH=\"${hadoop_home}/bin:${hadoop_home}/sbin:\${PATH}\"" >/etc/profile.d/hadoop.sh
 ENV PATH="${hadoop_home}/bin:${hadoop_home}/sbin:${PATH}"
 ENTRYPOINT ["/entrypoint.sh"]
