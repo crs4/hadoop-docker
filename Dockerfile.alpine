@@ -13,16 +13,12 @@ RUN bash /resources/install_hadoop.sh
 
 # "java" images are deprecated in favor of "openjdk" ones. However,
 # openjdk:8-jre-alpine currently installs u191, which causes datanode SIGSEGV
-FROM java:${java_version}-jre-alpine AS finish-setup
+FROM java:${java_version}-jre-alpine
 ARG hadoop_home
 COPY --from=install-hadoop "${hadoop_home}" "${hadoop_home}"
 COPY entrypoint.sh /
 # hadoop daemons use ps -p; launch_container.sh uses find -ls
-RUN apk add --no-cache bash procps findutils
-RUN echo "export PATH=\"${hadoop_home}/bin:${hadoop_home}/sbin:\${PATH}\"" >/etc/profile.d/hadoop.sh
-
-FROM scratch
-ARG hadoop_home
-COPY --from=finish-setup / /
+RUN apk add --no-cache bash procps findutils \
+    && echo "export PATH=\"${hadoop_home}/bin:${hadoop_home}/sbin:\${PATH}\"" >/etc/profile.d/hadoop.sh
 ENV PATH="${hadoop_home}/bin:${hadoop_home}/sbin:${PATH}"
 ENTRYPOINT ["/entrypoint.sh"]
