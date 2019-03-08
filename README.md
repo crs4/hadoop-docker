@@ -1,2 +1,41 @@
 # hadoop-docker
 Docker images for Apache Hadoop
+
+```
+$ docker build -t test_hadoop -f Dockerfile.ubuntu .
+$ export PORT_FW="-p 8020:8020 -p 8042:8042 -p 8088:8088 -p 9000:9000 -p 10020:10020 -p 19888:19888 -p 9866:9866 -p 9867:9867 -p 9870:9870 -p 9864:9864 -p 9868:9868"
+$ docker run --name hadoop ${PORT_FW} -d test_hadoop
+$ docker exec -it hadoop bash -l
+$ hdfs dfs -mkdir -p "/user/$(whoami)"
+$ hdfs dfs -put entrypoint.sh
+$ export V=$(hadoop version | head -n 1 | awk '{print $2}')
+$ hadoop jar /opt/hadoop/share/hadoop/mapreduce/hadoop-mapreduce-examples-${V}.jar wordcount entrypoint.sh wc_out
+[...]
+$ hdfs dfs -get wc_out
+$ grep hadoop wc_out/part*
+```
+
+## Changing the Hadoop version
+
+```
+docker build --build-arg hadoop_version=2.9.2 ...
+```
+
+Note that ports are different in Hadoop 2:
+
+```
+export PORT_FW="-p 8020:8020 -p 8042:8042 -p 8088:8088 -p 9000:9000 -p 10020:10020 -p 19888:19888 -p 50010:50010 -p 50020:50020 -p 50070:50070 -p 50075:50075 -p 50090:50090"
+```
+
+## Overriding the Configuration
+
+The Hadoop config dir is `/opt/hadoop/etc/hadoop`. One way to customize the configuration is to override the entire dir with a mount:
+
+```
+$ docker run --rm --entrypoint /bin/bash test_hadoop -c "tar -c -C /opt/hadoop/etc hadoop" | tar -x -C /tmp
+$ sed -i "s|</configuration>|<property><name>dfs.blocksize</name><value>$((256*2**20))</value></property></configuration>|" /tmp/hadoop/hdfs-site.xml
+$ docker run --name hadoop ${PORT_FW} -v /tmp/hadoop:/opt/hadoop/etc/hadoop -d test_hadoop
+```
+
+Note that, in `core-site.xml`, `entrypoint.sh` replaces `localhost`
+with the container's hostname.
