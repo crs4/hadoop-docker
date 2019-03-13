@@ -15,3 +15,8 @@ cp -f "${from_conf}"/* "${to_conf}"/
 for name in hadoop mapred yarn; do
     sed -i "1iexport JAVA_HOME=${JAVA_HOME}" "${to_conf}/${name}-env.sh"
 done
+
+if [ -n "${native_libs_dir:-}" ]; then
+    rm -rf "${hadoop_home}"/lib/native/*
+    mv "${native_libs_dir}"/* "${hadoop_home}"/lib/native/
+fi

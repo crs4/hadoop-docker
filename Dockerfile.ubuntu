@@ -2,11 +2,12 @@ ARG hadoop_home=/opt/hadoop
 ARG hadoop_version=3.2.0
 ARG java_version=8
 
-FROM ubuntu:18.04 AS install-hadoop
+FROM crs4/hadoop-nativelibs:${hadoop_version}-ubuntu AS install-hadoop
 ARG hadoop_home
 ARG hadoop_version
 ARG java_version
 ENV JAVA_HOME=/usr/lib/jvm/java-${java_version}-openjdk-amd64
+ENV native_libs_dir=/hadoop_native
 COPY resources /resources
 ADD http://www-eu.apache.org/dist/hadoop/common/hadoop-${hadoop_version}/hadoop-${hadoop_version}.tar.gz /resources
 RUN bash /resources/install_hadoop.sh
@@ -19,6 +20,8 @@ COPY entrypoint.sh /
 RUN apt -y update && apt -y install \
       openjdk-${java_version}-jre \
     && apt clean && rm -rf /var/lib/apt-lists/* \
-    && echo "export PATH=\"${hadoop_home}/bin:${hadoop_home}/sbin:\${PATH}\"" >/etc/profile.d/hadoop.sh
+    && echo "export PATH=\"${hadoop_home}/bin:${hadoop_home}/sbin:\${PATH}\"" >/etc/profile.d/hadoop.sh \
+    && echo "${hadoop_home}/lib/native" > /etc/ld.so.conf.d/hadoop.conf \
+    && ldconfig
 ENV PATH="${hadoop_home}/bin:${hadoop_home}/sbin:${PATH}"
 ENTRYPOINT ["/entrypoint.sh"]
