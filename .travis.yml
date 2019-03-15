@@ -10,7 +10,7 @@ env:
   - OS=ubuntu HADOOP_VERSION=2.9.2 SHORT_TAG=2
 
 script:
-  - docker build --build-arg hadoop_version=${HADOOP_VERSION} -f Dockerfile.${OS} -t crs4/hadoop:${HADOOP_VERSION}-${OS} .
+  - bash build.sh
   - docker run --rm --name hadoop -d crs4/hadoop:${HADOOP_VERSION}-${OS}
   - "docker exec hadoop bash -c 'until hdfs dfsadmin -safemode wait 2>/dev/null; do sleep 0.1; done'"
   - docker cp check.sh hadoop:/

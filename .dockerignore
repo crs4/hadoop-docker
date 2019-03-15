@@ -1,5 +1,7 @@
 .*
+build.sh
 check.sh
+hadoop
 Dockerfile*
 LICENSE
 push.sh
