@@ -1,6 +1,9 @@
 .*
+base
+build.sh
 check.sh
 Dockerfile*
+docker*
 LICENSE
 push.sh
 README.md

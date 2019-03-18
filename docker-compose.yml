@@ -1,0 +1,27 @@
+# HDFS cluster. Port values are Hadoop3-specific.
+
+version: "3"
+
+services:
+
+  namenode:
+    image: crs4/namenode:3.2.0-ubuntu
+    ports:
+      - "9000:9000"
+      - "9870:9870"
+      - "9871:9871"
+
+  datanode:
+    image: crs4/datanode:3.2.0-ubuntu
+    ports:
+      - "9864:9864"
+      - "9865:9865"
+      - "9866:9866"
+      - "9867:9867"
+    environment:
+      - NAMENODE_HOSTNAME=namenode
+
+  client:
+    image: crs4/hadoopclient:3.2.0-ubuntu
+    environment:
+      - NAMENODE_HOSTNAME=namenode
