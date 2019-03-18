@@ -2,17 +2,15 @@
 
 set -euo pipefail
 
-docker_build() {
-    local hv=$1 os=$2 img=$3
-    docker build \
-      --build-arg hadoop_version=${hv} \
-      -t ${img}:${hv}-${os} \
-      -f Dockerfile.${os} .
-}
+docker build \
+  --build-arg hadoop_version=${HADOOP_VERSION} \
+  -f base/Dockerfile.${OS} \
+  -t crs4/hadoop-base:${HADOOP_VERSION}-${OS} base
 
-docker_build ${HADOOP_VERSION} ${OS} crs4/hadoop-base
-for d in hadoop; do
-    pushd "${d}"
-    docker_build ${HADOOP_VERSION} ${OS} crs4/"${d}"
-    popd
+for cmd in hadoop; do
+    docker build \
+      --build-arg cmd=${cmd} \
+      --build-arg hadoop_version=${HADOOP_VERSION} \
+      --build-arg os=${OS} \
+      -t crs4/${cmd}:${HADOOP_VERSION}-${OS} .
 done
