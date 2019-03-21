@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+# Run this in crs4/hadoop
+
 set -euo pipefail
 
 export USER="${USER:-$(whoami)}"

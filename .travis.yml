@@ -13,8 +13,10 @@ script:
   - bash build.sh
   - docker run --rm --name hadoop -d crs4/hadoop:${HADOOP_VERSION}-${OS}
   - "docker exec hadoop bash -c 'until hdfs dfsadmin -safemode wait 2>/dev/null; do sleep 0.1; done'"
-  - docker cp check.sh hadoop:/
+  - docker cp test/check.sh hadoop:/
   - docker exec hadoop bash /check.sh
+  - docker stop hadoop
+  - bash test/check_custom_conf.sh
 
 deploy:
   - provider: script
