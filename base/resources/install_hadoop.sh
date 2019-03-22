@@ -20,3 +20,5 @@ if [ -n "${native_libs_dir:-}" ]; then
     rm -rf "${hadoop_home}"/lib/native/*
     mv "${native_libs_dir}"/* "${hadoop_home}"/lib/native/
 fi
+
+rm -rf "${hadoop_home}"/share/doc
