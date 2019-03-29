@@ -24,3 +24,10 @@ for cmd in "${cmd_list[@]}"; do
       --build-arg os=${OS} \
       -t crs4/${cmd}:${HADOOP_VERSION}-${OS} .
 done
+
+if [ "${OS}" == "ubuntu" ]; then
+    docker build \
+      -f Dockerfile.secdn \
+      --build-arg hadoop_version=${HADOOP_VERSION} \
+      -t crs4/securedatanode:${HADOOP_VERSION}-${OS} .
+fi

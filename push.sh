@@ -11,6 +11,7 @@ cmd_list=(
     nodemanager
     resourcemanager
 )
+[ "${OS}" == "ubuntu" ] && cmd_list+=( securedatanode )
 
 echo "${CI_PASS}" | docker login -u "${CI_USER}" --password-stdin
 
