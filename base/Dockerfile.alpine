@@ -2,23 +2,20 @@ ARG hadoop_home=/opt/hadoop
 ARG hadoop_version=3.2.0
 ARG java_version=8
 
-FROM alpine:3.9 AS install-hadoop
+# "java" images are deprecated in favor of "openjdk" ones. Unfortunately, with
+# the recent versions of IcedTea found in openjdk:8-jre-alpine, the datanode
+# daemon crashes with a SIGSEGV. Seen with u191 and u201.
+FROM java:${java_version}-jre-alpine
 ARG hadoop_home
 ARG hadoop_version
 ENV JAVA_HOME=/usr/lib/jvm/default-jvm
-COPY resources /resources
-ADD http://www-eu.apache.org/dist/hadoop/common/hadoop-${hadoop_version}/hadoop-${hadoop_version}.tar.gz /resources
-RUN apk add --no-cache bash
-RUN bash /resources/install_hadoop.sh
-
-# "java" images are deprecated in favor of "openjdk" ones. However,
-# openjdk:8-jre-alpine currently installs u191, which causes datanode SIGSEGV
-FROM java:${java_version}-jre-alpine
-ARG hadoop_home
-COPY --from=install-hadoop "${hadoop_home}" "${hadoop_home}"
-COPY entrypoint.sh /
-# hadoop daemons use ps -p; launch_container.sh uses find -ls
-RUN apk add --no-cache bash procps findutils \
-    && echo "export PATH=\"${hadoop_home}/bin:${hadoop_home}/sbin:\${PATH}\"" >/etc/profile.d/hadoop.sh
 ENV PATH="${hadoop_home}/bin:${hadoop_home}/sbin:${PATH}"
+COPY entrypoint.sh /
+COPY resources /resources
+# hadoop daemons use ps -p; launch_container.sh uses find -ls;
+# install_hadoop.sh uses tar --strip
+RUN apk add --no-cache bash findutils procps tar \
+    && echo "export PATH=\"${hadoop_home}/bin:${hadoop_home}/sbin:\${PATH}\"" >/etc/profile.d/hadoop.sh \
+    && bash /resources/install_hadoop.sh \
+    && rm -rf /resources
 ENTRYPOINT ["/entrypoint.sh"]
