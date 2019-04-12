@@ -7,5 +7,4 @@ RUN apt-get -y update && apt-get -y install --no-install-recommends \
     && apt-get clean && rm -rf /var/lib/apt-lists/* /tmp/* /var/tmp/* \
     && echo "export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64" >>/etc/profile.d/jsvc.sh \
     && echo "export JSVC_HOME=/usr/bin" >>/etc/profile.d/hadoop.sh
-ENV JAVA_HOME="/usr/lib/jvm/java-8-openjdk-amd64"
 ENV JSVC_HOME="/usr/bin"

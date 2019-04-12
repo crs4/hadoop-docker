@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+# Get the HDFS cluster ID from the DataNode HTTP server. If the DataNode is
+# not connected to a NameNode, output will be "null" and exit value != 0.
+
+set -euo pipefail
+
+addr=$(hdfs getconf -confKey dfs.datanode.http.address)
+url="${addr}/jmx?qry=Hadoop:service=DataNode,name=DataNodeInfo"
+cid=$(wget -q -O - ${url} | grep ClusterId | sed -E 's/^ *"ClusterId" *: *(.*),/\1/')
+echo ${cid}
+test "${cid}" != "null"
