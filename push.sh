@@ -4,6 +4,7 @@ set -euo pipefail
 
 cmd_list=(
     datanode
+    hadoop-base
     hadoopclient
     hadoop
     historyserver
