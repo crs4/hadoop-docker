@@ -7,7 +7,7 @@ die() {
     exit 1
 }
 
-img=crs4/hadoop-base:${HADOOP_VERSION}-${OS}
+img=crs4/hadoop-base:${HADOOP_VERSION}
 new_bs=$((16*2**20))
 foo_content="export FOO=foo"
 

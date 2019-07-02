@@ -14,20 +14,17 @@ cmd_list=(
 
 docker build \
   --build-arg hadoop_version=${HADOOP_VERSION} \
-  -f base/Dockerfile.${OS} \
-  -t crs4/hadoop-base:${HADOOP_VERSION}-${OS} base
+  -f base/Dockerfile \
+  -t crs4/hadoop-base:${HADOOP_VERSION} base
 
 for cmd in "${cmd_list[@]}"; do
     docker build \
       --build-arg cmd=${cmd} \
       --build-arg hadoop_version=${HADOOP_VERSION} \
-      --build-arg os=${OS} \
-      -t crs4/${cmd}:${HADOOP_VERSION}-${OS} .
+      -t crs4/${cmd}:${HADOOP_VERSION} .
 done
 
-if [ "${OS}" == "ubuntu" ]; then
-    docker build \
-      -f Dockerfile.secdn \
-      --build-arg hadoop_version=${HADOOP_VERSION} \
-      -t crs4/securedatanode:${HADOOP_VERSION}-${OS} .
-fi
+docker build \
+  -f Dockerfile.secdn \
+  --build-arg hadoop_version=${HADOOP_VERSION} \
+  -t crs4/securedatanode:${HADOOP_VERSION} .
