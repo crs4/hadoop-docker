@@ -7,7 +7,7 @@ services:
   namenode:
     image: crs4/namenode:3.2.0
     ports:
-      - "9000:9000"
+      - "8020:8020"
       - "9870:9870"
       - "9871:9871"
 
