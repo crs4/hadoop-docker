@@ -14,6 +14,12 @@ script:
   - docker exec hadoop bash /check.sh
   - docker stop hadoop
   - bash test/check_custom_conf.sh
+  - docker run --rm --name hdfs -d crs4/hdfs:${HADOOP_VERSION}
+  - "docker exec hdfs bash -c 'until datanode_cid; do sleep 0.1; done'"
+  - "docker exec hdfs bash -c 'hdfs dfs -mkdir -p /user/$(whoami)'"
+  - "docker exec hdfs bash -c 'hdfs dfs -put /etc/hosts'"
+  - "docker exec hdfs bash -c 'hdfs dfs -cat hosts'"
+  - docker stop hdfs
 
 deploy:
   - provider: script

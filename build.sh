@@ -6,6 +6,7 @@ cmd_list=(
     datanode
     hadoopclient
     hadoop
+    hdfs
     historyserver
     namenode
     nodemanager

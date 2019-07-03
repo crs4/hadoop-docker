@@ -7,6 +7,7 @@ img_list=(
     hadoop-base
     hadoopclient
     hadoop
+    hdfs
     historyserver
     namenode
     nodemanager
