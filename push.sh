@@ -11,19 +11,22 @@ img_list=(
     namenode
     nodemanager
     resourcemanager
+    securedatanode
 )
-[ "${OS}" == "ubuntu" ] && img_list+=( securedatanode )
 
 echo "${CI_PASS}" | docker login -u "${CI_USER}" --password-stdin
 
 for img in "${img_list[@]}"; do
-    docker push crs4/${img}:${HADOOP_VERSION}-${OS}
+    ref_img=crs4/${img}:${HADOOP_VERSION}
+    docker push ${ref_img}
+    docker tag ${ref_img} crs4/${img}:${HADOOP_VERSION}-${IMG_VERSION}
+    docker push crs4/${img}:${HADOOP_VERSION}-${IMG_VERSION}
     if [ -n "${SHORT_TAG:-}" ]; then
-	docker tag crs4/${img}:${HADOOP_VERSION}-${OS} crs4/${img}:${SHORT_TAG}
+	docker tag ${ref_img} crs4/${img}:${SHORT_TAG}
 	docker push crs4/${img}:${SHORT_TAG}
     fi
     if [ -n "${LATEST:-}" ]; then
-	docker tag crs4/${img}:${HADOOP_VERSION}-${OS} crs4/${img}:latest
+	docker tag ${ref_img} crs4/${img}:latest
 	docker push crs4/${img}:latest
     fi
 done

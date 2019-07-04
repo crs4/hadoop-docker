@@ -4,7 +4,7 @@ Docker images for Apache Hadoop
 Build:
 
 ```
-$ HADOOP_VERSION=3.2.0 OS=ubuntu bash build.sh
+$ HADOOP_VERSION=3.2.0 bash build.sh
 ```
 
 This creates multiple images, all based on the same Hadoop installation:
@@ -19,15 +19,22 @@ This creates multiple images, all based on the same Hadoop installation:
 Usage example for the all-in-one image:
 
 ```
-export PORT_FW="-p 8020:8020 -p 8042:8042 -p 8088:8088 -p 9000:9000 -p 10020:10020 -p 19888:19888 -p 9866:9866 -p 9867:9867 -p 9870:9870 -p 9864:9864 -p 9868:9868"
-docker run --name hadoop ${PORT_FW} -d crs4/hadoop
+docker run --rm --name hadoop -d crs4/hadoop:3.2.0
 docker exec -it hadoop bash -l
 hdfs dfs -mkdir -p "/user/$(whoami)"
 hdfs dfs -put entrypoint.sh
 export V=$(hadoop version | head -n 1 | awk '{print $2}')
 hadoop jar /opt/hadoop/share/hadoop/mapreduce/hadoop-mapreduce-examples-${V}.jar wordcount entrypoint.sh wc_out
 hdfs dfs -get wc_out
-grep hadoop wc_out/part*
+head wc_out/part*
+```
+
+To access the Hadoop dashboards from a browser on the host, you might want to
+expose a few ports. For instance, the following brings up the container with
+the NameNode and DataNode HTTP ports exposed:
+
+```
+docker run --rm --name hadoop -p 9870:9870 -p 9864:9864 -d crs4/hadoop:3.2.0
 ```
 
 The docker-compose file shows how to set up an HDFS cluster with three
@@ -40,16 +47,16 @@ hdfs dfs -mkdir -p "/user/$(whoami)"
 [...]
 ```
 
-## Changing the Hadoop version and/or the base image
+## Changing the Hadoop version
 
 ```
-$ HADOOP_VERSION=2.9.2 OS=alpine bash build.sh
+$ HADOOP_VERSION=2.9.2 bash build.sh
 ```
 
 Note that ports are different in Hadoop 2:
 
 ```
-export PORT_FW="-p 8020:8020 -p 8042:8042 -p 8088:8088 -p 9000:9000 -p 10020:10020 -p 19888:19888 -p 50010:50010 -p 50020:50020 -p 50070:50070 -p 50075:50075 -p 50090:50090"
+docker run --rm --name hadoop -p 50070:50070 -p 50075:50075 -d crs4/hadoop:3.2.0
 ```
 
 ## Custom configuration
@@ -83,7 +90,7 @@ $ docker run ${PORT_FW} -v /tmp/hadoop:/opt/hadoop/etc/hadoop -d crs4/hadoop
 The entrypoint automatically replaces "localhost", if found in the value of
 the `fs.defaultFS` property, with the running container's hostname (this
 allows to contact the name node from outside the container). Since this
-substitution happens before HADOOP_CUSTOM_CONF_DIR is processed, it has no
+substitution happens before `HADOOP_CUSTOM_CONF_DIR` is processed, it has no
 effect if `${HADOOP_CUSTOM_CONF_DIR}/core-site.xml` is provided. Bind mounts,
 however, take effect before the entrypoint is executed, so use one or the
 other configuration method depending on whether you want the automatic
