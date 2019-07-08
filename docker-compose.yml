@@ -1,4 +1,4 @@
-# HDFS cluster. Port values are Hadoop3-specific.
+# Hadoop cluster. Port values are Hadoop3-specific.
 
 version: "3"
 
@@ -21,7 +21,31 @@ services:
     environment:
       - NAMENODE_HOSTNAME=namenode
 
+  resourcemanager:
+    image: crs4/resourcemanager:3.2.0
+    ports:
+      - "8088:8088"
+    environment:
+      - NAMENODE_HOSTNAME=namenode
+
+  nodemanager:
+    image: crs4/nodemanager:3.2.0
+    ports:
+      - "8042:8042"
+    environment:
+      - NAMENODE_HOSTNAME=namenode
+      - RESOURCEMANAGER_HOSTNAME=resourcemanager
+
+  historyserver:
+    image: crs4/historyserver:3.2.0
+    ports:
+      - "19888:19888"
+    environment:
+      - NAMENODE_HOSTNAME=namenode
+      - RESOURCEMANAGER_HOSTNAME=resourcemanager
+
   client:
     image: crs4/hadoopclient:3.2.0
     environment:
       - NAMENODE_HOSTNAME=namenode
+      - RESOURCEMANAGER_HOSTNAME=resourcemanager

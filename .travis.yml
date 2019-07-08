@@ -3,8 +3,8 @@ services: docker
 sudo: required
 
 env:
-  - HADOOP_VERSION=3.2.0 IMG_VERSION=v2 SHORT_TAG=3 LATEST=true
-  - HADOOP_VERSION=2.9.2 IMG_VERSION=v2 SHORT_TAG=2
+  - HADOOP_VERSION=3.2.0 IMG_VERSION=v3 SHORT_TAG=3 LATEST=true
+  - HADOOP_VERSION=2.9.2 IMG_VERSION=v3 SHORT_TAG=2
 
 script:
   - bash build.sh
