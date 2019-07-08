@@ -20,6 +20,9 @@ script:
   - "docker exec hdfs bash -c 'hdfs dfs -put /etc/hosts'"
   - "docker exec hdfs bash -c 'hdfs dfs -cat hosts'"
   - docker stop hdfs
+  - docker-compose up -d
+  - bash test/check_compose.sh
+  - docker-compose down
 
 deploy:
   - provider: script
