@@ -29,3 +29,6 @@ if [ -n "${native_libs_dir:-}" ]; then
 fi
 
 rm -rf "${hadoop_home}"/share/doc
+rm -rf "${hadoop_home}"/share/hadoop/tools
+rm -rf "${hadoop_home}"/share/hadoop/*/sources
+rm -rf "${hadoop_home}"/share/hadoop/*/jdiff
