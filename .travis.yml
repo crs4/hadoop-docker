@@ -3,8 +3,8 @@ services: docker
 sudo: required
 
 env:
-  - HADOOP_VERSION=3.2.0 IMG_VERSION=v2 SHORT_TAG=3 LATEST=true
-  - HADOOP_VERSION=2.9.2 IMG_VERSION=v2 SHORT_TAG=2
+  - HADOOP_VERSION=3.2.0 IMG_VERSION=v3 SHORT_TAG=3 LATEST=true
+  - HADOOP_VERSION=2.9.2 IMG_VERSION=v3 SHORT_TAG=2
 
 script:
   - bash build.sh
@@ -20,6 +20,9 @@ script:
   - "docker exec hdfs bash -c 'hdfs dfs -put /etc/hosts'"
   - "docker exec hdfs bash -c 'hdfs dfs -cat hosts'"
   - docker stop hdfs
+  - docker-compose up -d
+  - bash test/check_compose.sh
+  - docker-compose down
 
 deploy:
   - provider: script

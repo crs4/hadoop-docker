@@ -37,14 +37,15 @@ the NameNode and DataNode HTTP ports exposed:
 docker run --rm --name hadoop -p 9870:9870 -p 9864:9864 -d crs4/hadoop:3.2.0
 ```
 
-The docker-compose file shows how to set up an HDFS cluster with three
-services (namenode, datanode, client).
+The docker-compose file shows how to set up a small Hadoop cluster using the
+single-service images.
 
 ```
-docker-compose up
-docker exec -it hadoop-docker_client_1 bash
+docker-compose up -d
+docker-compose exec client bash
 hdfs dfs -mkdir -p "/user/$(whoami)"
 [...]
+docker-compose down
 ```
 
 ## Changing the Hadoop version

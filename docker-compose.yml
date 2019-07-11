@@ -1,27 +1,49 @@
-# HDFS cluster. Port values are Hadoop3-specific.
+# Hadoop cluster example.
 
 version: "3"
 
 services:
 
   namenode:
-    image: crs4/namenode:3.2.0
+    image: crs4/namenode:${HADOOP_VERSION}
     ports:
-      - "8020:8020"
-      - "9870:9870"
-      - "9871:9871"
+      - "${NN_PORT}:${NN_PORT}"
+      - "${NN_HTTP_PORT}:${NN_HTTP_PORT}"
 
   datanode:
-    image: crs4/datanode:3.2.0
+    image: crs4/datanode:${HADOOP_VERSION}
     ports:
-      - "9864:9864"
-      - "9865:9865"
-      - "9866:9866"
-      - "9867:9867"
+      - "${DN_PORT}:${DN_PORT}"
+      - "${DN_HTTP_PORT}:${DN_HTTP_PORT}"
+      - "${DN_IPC_PORT}:${DN_IPC_PORT}"
     environment:
       - NAMENODE_HOSTNAME=namenode
 
-  client:
-    image: crs4/hadoopclient:3.2.0
+  resourcemanager:
+    image: crs4/resourcemanager:${HADOOP_VERSION}
+    ports:
+      - "${RM_PORT}:${RM_PORT}"
     environment:
       - NAMENODE_HOSTNAME=namenode
+
+  nodemanager:
+    image: crs4/nodemanager:${HADOOP_VERSION}
+    ports:
+      - "${NM_PORT}:${NM_PORT}"
+    environment:
+      - NAMENODE_HOSTNAME=namenode
+      - RESOURCEMANAGER_HOSTNAME=resourcemanager
+
+  historyserver:
+    image: crs4/historyserver:${HADOOP_VERSION}
+    ports:
+      - "${HS_PORT}:${HS_PORT}"
+    environment:
+      - NAMENODE_HOSTNAME=namenode
+      - RESOURCEMANAGER_HOSTNAME=resourcemanager
+
+  client:
+    image: crs4/hadoopclient:${HADOOP_VERSION}
+    environment:
+      - NAMENODE_HOSTNAME=namenode
+      - RESOURCEMANAGER_HOSTNAME=resourcemanager

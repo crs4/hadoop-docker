@@ -12,6 +12,11 @@ export USER="${USER:-$(whoami)}"
 nn_host=${NAMENODE_HOSTNAME:-${HOSTNAME}}
 sed -i s/localhost/${nn_host}/ "${conf_dir}"/core-site.xml
 
+# allow to set the RM host name
+if [ -n "${RESOURCEMANAGER_HOSTNAME:-}" ]; then
+    sed -i "s|</configuration>|<property><name>yarn.resourcemanager.hostname</name><value>${RESOURCEMANAGER_HOSTNAME}</value></property></configuration>|" "${conf_dir}"/yarn-site.xml
+fi
+
 if [ -d "${HADOOP_CUSTOM_CONF_DIR:-}" ]; then
     if [ -e "${HADOOP_CUSTOM_CONF_DIR}/shellprofile.d" ]; then
 	rm -rf "${conf_dir}/shellprofile.d"
