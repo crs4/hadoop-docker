@@ -2,7 +2,7 @@
 
 set -euo pipefail
 
-this="${BASH_SOURCE-$0}"
+this="${BASH_SOURCE:-$0}"
 this_dir=$(cd -P -- "$(dirname -- "${this}")" && pwd -P)
 
 pushd "${this_dir}/.."

@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 """\
 Manual image builder for local use. "Official" images are built and
 pushed by Travis.
