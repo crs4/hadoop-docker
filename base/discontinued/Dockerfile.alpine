@@ -1,5 +1,5 @@
 ARG hadoop_home=/opt/hadoop
-ARG hadoop_version=3.2.0
+ARG hadoop_version=3.2.1
 ARG java_version=8
 
 # "java" images are deprecated in favor of "openjdk" ones. Unfortunately, with

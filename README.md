@@ -4,7 +4,7 @@ Docker images for Apache Hadoop
 Build:
 
 ```
-$ HADOOP_VERSION=3.2.0 bash build.sh
+$ HADOOP_VERSION=3.2.1 bash build.sh
 ```
 
 This creates multiple images, all based on the same Hadoop installation:
@@ -19,7 +19,7 @@ This creates multiple images, all based on the same Hadoop installation:
 Usage example for the all-in-one image:
 
 ```
-docker run --rm --name hadoop -d crs4/hadoop:3.2.0
+docker run --rm --name hadoop -d crs4/hadoop:3.2.1
 docker exec -it hadoop bash -l
 hdfs dfs -mkdir -p "/user/$(whoami)"
 hdfs dfs -put entrypoint.sh
@@ -34,7 +34,7 @@ expose a few ports. For instance, the following brings up the container with
 the NameNode and DataNode HTTP ports exposed:
 
 ```
-docker run --rm --name hadoop -p 9870:9870 -p 9864:9864 -d crs4/hadoop:3.2.0
+docker run --rm --name hadoop -p 9870:9870 -p 9864:9864 -d crs4/hadoop:3.2.1
 ```
 
 The docker-compose file shows how to set up a small Hadoop cluster using the
@@ -57,7 +57,7 @@ $ HADOOP_VERSION=2.9.2 bash build.sh
 Note that ports are different in Hadoop 2:
 
 ```
-docker run --rm --name hadoop -p 50070:50070 -p 50075:50075 -d crs4/hadoop:3.2.0
+docker run --rm --name hadoop -p 50070:50070 -p 50075:50075 -d crs4/hadoop:3.2.1
 ```
 
 ## Custom configuration
