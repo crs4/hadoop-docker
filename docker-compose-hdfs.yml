@@ -5,14 +5,14 @@ version: "3"
 services:
 
   namenode:
-    image: crs4/namenode:3.2.0
+    image: crs4/namenode:3.2.1
     ports:
       - "8020:8020"
       - "9870:9870"
       - "9871:9871"
 
   datanode:
-    image: crs4/datanode:3.2.0
+    image: crs4/datanode:3.2.1
     ports:
       - "9864:9864"
       - "9865:9865"
@@ -22,6 +22,6 @@ services:
       - NAMENODE_HOSTNAME=namenode
 
   client:
-    image: crs4/hadoopclient:3.2.0
+    image: crs4/hadoopclient:3.2.1
     environment:
       - NAMENODE_HOSTNAME=namenode

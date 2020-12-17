@@ -1,5 +1,5 @@
 ARG hadoop_home=/opt/hadoop
-ARG hadoop_version=3.2.0
+ARG hadoop_version=3.2.1
 ARG java_version=8
 
 FROM crs4/hadoop-nativelibs:${hadoop_version}-ubuntu AS install-hadoop
@@ -11,7 +11,7 @@ RUN apt-get -y update && apt-get -y install wget \
     && native_libs_dir=/hadoop_native JAVA_HOME=/usr/lib/jvm/java-${java_version}-openjdk-amd64 bash /resources/install_hadoop.sh
 
 # Java System.loadLibrary ignores ld.so.conf, so we also set LD_LIBRARY_PATH
-FROM ubuntu:18.04
+FROM ubuntu:20.04
 ARG hadoop_home
 ARG java_version
 COPY --from=install-hadoop "${hadoop_home}" "${hadoop_home}"
